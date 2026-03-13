@@ -4,6 +4,7 @@ import { TagBadge } from './TagBadge';
 
 interface MemoCardProps {
   memo: Memo;
+  isRemoving?: boolean;
   onEdit: (memo: Memo) => void;
   onDelete: (id: string) => void;
   onTogglePin: (id: string) => void;
@@ -17,6 +18,7 @@ function formatDate(iso: string): string {
 
 export function MemoCard({
   memo,
+  isRemoving = false,
   onEdit,
   onDelete,
   onTogglePin,
@@ -30,6 +32,7 @@ export function MemoCard({
         memo.isPinned
           ? 'border-indigo-300 ring-1 ring-indigo-200'
           : 'border-slate-200',
+        isRemoving ? 'memo-removing' : '',
       ].join(' ')}
     >
       {/* 고정 배지 */}

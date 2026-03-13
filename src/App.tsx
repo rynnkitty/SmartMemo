@@ -30,6 +30,7 @@ export default function App() {
 
   const [editor, setEditor] = useState<EditorState>({ open: false });
   const [deleteState, setDeleteState] = useState<DeleteState>({ pending: false });
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   // Escape 키로 모달 닫기
   const handleKeyDown = useCallback(
@@ -80,8 +81,13 @@ export default function App() {
 
   function handleConfirmDelete() {
     if (!deleteState.pending) return;
-    deleteMemo(deleteState.id);
+    const id = deleteState.id;
     setDeleteState({ pending: false });
+    setRemovingId(id);
+    setTimeout(() => {
+      deleteMemo(id);
+      setRemovingId(null);
+    }, 220);
   }
 
   return (
@@ -99,6 +105,7 @@ export default function App() {
       >
         <MemoList
           memos={filteredMemos}
+          removingId={removingId}
           onEdit={handleEditMemo}
           onDelete={handleDeleteRequest}
           onTogglePin={togglePin}
