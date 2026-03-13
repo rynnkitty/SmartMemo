@@ -37,8 +37,9 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          GITHUB_ACTIONS: true
+
+      - name: Copy index.html to 404.html
+        run: cp dist/index.html dist/404.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v4
