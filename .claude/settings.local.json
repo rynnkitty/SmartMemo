@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:\\\\1.프로젝트\\\\98.사내해커톤\\\\SmartMemo\" && npm create vite@latest . -- --template react-ts 2>&1)",
+      "Bash(cd \"D:\\\\1.프로젝트\\\\98.사내해커톤\\\\SmartMemo\" && echo y | npm create vite@latest . -- --template react-ts 2>&1)",
+      "Bash(cd \"D:\\\\1.프로젝트\\\\98.사내해커톤\\\\SmartMemo\" && npx create-vite@latest . --template react-ts --force 2>&1 || npx create-vite . --template react-ts 2>&1)"
+    ]
+  }
+}

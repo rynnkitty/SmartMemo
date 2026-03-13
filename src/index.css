@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* ── 스크롤바 스타일링 ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}
+
+/* ── 모달 오버레이 진입 애니메이션 ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.modal-overlay {
+  animation: fade-in 0.15s ease-out both;
+}
+.modal-panel {
+  animation: slide-up 0.18s ease-out both;
+}
+
+/* ── 메모 카드 삭제 애니메이션 ── */
+@keyframes slide-out {
+  from { opacity: 1; transform: translateX(0);    max-height: 400px; }
+  to   { opacity: 0; transform: translateX(-12px); max-height: 0;     }
+}
+.memo-removing {
+  animation: slide-out 0.22s ease-in forwards;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── 포커스 링 커스텀 ── */
+*:focus-visible {
+  outline: 2px solid #6366f1; /* indigo-500 */
+  outline-offset: 2px;
+}
+
+/* ── 기본 트랜지션 헬퍼 ── */
+.transition-smooth {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
