@@ -5,6 +5,7 @@ import { MemoCard } from './MemoCard';
 interface MemoListProps {
   memos: Memo[];
   removingId?: string | null;
+  onView: (memo: Memo) => void;
   onEdit: (memo: Memo) => void;
   onDelete: (id: string) => void;
   onTogglePin: (id: string) => void;
@@ -14,6 +15,7 @@ interface MemoListProps {
 export function MemoList({
   memos,
   removingId,
+  onView,
   onEdit,
   onDelete,
   onTogglePin,
@@ -38,6 +40,7 @@ export function MemoList({
           key={memo.id}
           memo={memo}
           isRemoving={memo.id === removingId}
+          onView={onView}
           onEdit={onEdit}
           onDelete={onDelete}
           onTogglePin={onTogglePin}

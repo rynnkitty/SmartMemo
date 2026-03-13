@@ -5,6 +5,7 @@ import { TagBadge } from './TagBadge';
 interface MemoCardProps {
   memo: Memo;
   isRemoving?: boolean;
+  onView: (memo: Memo) => void;
   onEdit: (memo: Memo) => void;
   onDelete: (id: string) => void;
   onTogglePin: (id: string) => void;
@@ -19,6 +20,7 @@ function formatDate(iso: string): string {
 export function MemoCard({
   memo,
   isRemoving = false,
+  onView,
   onEdit,
   onDelete,
   onTogglePin,
@@ -26,8 +28,9 @@ export function MemoCard({
 }: MemoCardProps) {
   return (
     <article
+      onClick={() => onView(memo)}
       className={[
-        'group relative bg-white rounded-2xl border p-4 flex flex-col gap-3',
+        'group relative bg-white rounded-2xl border p-4 flex flex-col gap-3 cursor-pointer',
         'shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200',
         memo.isPinned
           ? 'border-indigo-300 ring-1 ring-indigo-200'
@@ -56,7 +59,7 @@ export function MemoCard({
 
       {/* 태그 */}
       {memo.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
           {memo.tags.map((tag) => (
             <TagBadge key={tag} tag={tag} onClick={onTagClick} />
           ))}
@@ -70,7 +73,10 @@ export function MemoCard({
           {formatDate(memo.updatedAt)}
         </span>
 
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div
+          className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             type="button"
             onClick={() => onTogglePin(memo.id)}

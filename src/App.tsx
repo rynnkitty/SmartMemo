@@ -5,6 +5,7 @@ import { useSearch } from './hooks/useSearch';
 import { Layout } from './components/Layout';
 import { MemoList } from './components/MemoList';
 import { MemoEditor } from './components/MemoEditor';
+import { MemoDetail } from './components/MemoDetail';
 import { ConfirmDialog } from './components/ConfirmDialog';
 
 type EditorState =
@@ -31,6 +32,7 @@ export default function App() {
   const [editor, setEditor] = useState<EditorState>({ open: false });
   const [deleteState, setDeleteState] = useState<DeleteState>({ pending: false });
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [viewingMemo, setViewingMemo] = useState<Memo | null>(null);
 
   // Escape 키로 모달 닫기
   const handleKeyDown = useCallback(
@@ -40,9 +42,11 @@ export default function App() {
         setDeleteState({ pending: false });
       } else if (editor.open) {
         setEditor({ open: false });
+      } else if (viewingMemo) {
+        setViewingMemo(null);
       }
     },
-    [editor.open, deleteState.pending]
+    [editor.open, deleteState.pending, viewingMemo]
   );
 
   useEffect(() => {
@@ -51,7 +55,7 @@ export default function App() {
   }, [handleKeyDown]);
 
   // 모달 열릴 때 body 스크롤 잠금
-  const anyModalOpen = editor.open || deleteState.pending;
+  const anyModalOpen = editor.open || deleteState.pending || viewingMemo !== null;
   useEffect(() => {
     document.body.style.overflow = anyModalOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -106,12 +110,24 @@ export default function App() {
         <MemoList
           memos={filteredMemos}
           removingId={removingId}
+          onView={setViewingMemo}
           onEdit={handleEditMemo}
           onDelete={handleDeleteRequest}
           onTogglePin={togglePin}
           onTagClick={toggleTag}
         />
       </Layout>
+
+      {viewingMemo && (
+        <MemoDetail
+          memo={viewingMemo}
+          onClose={() => setViewingMemo(null)}
+          onEdit={handleEditMemo}
+          onDelete={handleDeleteRequest}
+          onTogglePin={togglePin}
+          onTagClick={toggleTag}
+        />
+      )}
 
       {editor.open && (
         <MemoEditor
