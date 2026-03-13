@@ -4,6 +4,7 @@
 > Claude API 없이도 폴백 로직으로 **완전하게 동작**합니다.
 
 ![CI](https://github.com/rynnkitty/SmartMemo/actions/workflows/ci.yml/badge.svg)
+![Deploy](https://github.com/rynnkitty/SmartMemo/actions/workflows/deploy.yml/badge.svg)
 
 ---
 
@@ -11,7 +12,7 @@
 
 | 기능 | 설명 |
 |------|------|
-| 📝 메모 CRUD | 생성 · 수정 · 삭제, 확인 다이얼로그 |
+| 📝 메모 CRUD | 생성 · 수정 · 삭제 (확인 다이얼로그 + 슬라이드 아웃 애니메이션) |
 | 🤖 AI 자동 태그 | 본문 분석 → 태그 3~5개 자동 추천 (폴백: 키워드 빈도 분석) |
 | 📄 AI 자동 요약 | 100자 이내 요약 카드 미리보기 (폴백: 앞 100자) |
 | 🔍 실시간 검색 | 제목 + 본문 debounce 300ms 검색 |
@@ -33,7 +34,7 @@
 | 아이콘 | lucide-react | 최신 |
 | 저장 | LocalStorage | 브라우저 내장 |
 | AI (선택) | Claude API | claude-sonnet-4-20250514 |
-| 테스트 | Vitest | 4 |
+| 테스트 | Vitest + Testing Library | 4 |
 
 ---
 
@@ -73,11 +74,29 @@ VITE_CLAUDE_API_KEY=sk-ant-...
 ## 🧪 테스트
 
 ```bash
-npm run test        # 단위 테스트 실행 (26개)
-npm run coverage    # 커버리지 리포트
+npm run test        # 단위 테스트 실행 (44개)
+npm run coverage    # 커버리지 리포트 생성
 ```
 
-테스트 대상: `utils/storage`, `utils/search`, `utils/ai` (폴백 로직)
+| 테스트 파일 | 테스트 수 | 대상 |
+|------------|---------|------|
+| `utils/storage.test.ts` | 5개 | LocalStorage 읽기/쓰기, 에러 처리 |
+| `utils/search.test.ts` | 10개 | 필터, 정렬, debounce |
+| `utils/ai.test.ts` | 7개 | AI 폴백 로직 (태그 추출, 요약) |
+| `hooks/useMemos.test.ts` | 9개 | 메모 CRUD, localStorage 동기화 |
+| `hooks/useSearch.test.ts` | 9개 | 검색 debounce, 태그 필터, 정렬 |
+| **합계** | **44개** | |
+
+---
+
+## 🔄 CI/CD
+
+| 워크플로 | 트리거 | 단계 |
+|---------|--------|------|
+| **CI** (`ci.yml`) | push · PR | lint → type-check → test → build |
+| **Deploy** (`deploy.yml`) | main push | build → GitHub Pages 자동 배포 |
+
+> GitHub Pages 활성화: 레포 Settings → Pages → Source → **GitHub Actions** 선택
 
 ---
 
@@ -87,7 +106,7 @@ npm run coverage    # 커버리지 리포트
 src/
 ├── components/
 │   ├── Layout.tsx          # 헤더 + 사이드바 + 메인 레이아웃
-│   ├── MemoCard.tsx        # 메모 카드 (hover 애니메이션, pin/edit/delete)
+│   ├── MemoCard.tsx        # 메모 카드 (hover 애니메이션, 삭제 슬라이드 아웃)
 │   ├── MemoEditor.tsx      # 작성/편집 모달 (AI 태그 추천)
 │   ├── MemoList.tsx        # 반응형 그리드 + 빈 상태 처리
 │   ├── SearchBar.tsx       # 검색 입력
@@ -105,6 +124,19 @@ src/
 │   └── ai.ts               # Claude API 호출 + 폴백
 └── App.tsx                 # 전체 상태 조합 + 모달 관리
 ```
+
+---
+
+## 📦 번들 구조
+
+| 청크 | 크기 | 내용 |
+|------|------|------|
+| `vendor.js` | 4KB | react, react-dom |
+| `icons.js` | 16KB | lucide-react |
+| `index.js` | 201KB | 앱 코드 |
+| `index.css` | 23KB | TailwindCSS |
+
+> 청크 분리로 react/아이콘 라이브러리는 별도 캐싱 → 반복 방문 시 로드 속도 향상
 
 ---
 
